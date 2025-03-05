@@ -137,7 +137,7 @@ def dashboard():
         return response
     
     else:
-        return render_template('login.html', params=params)
+        return redirect('/login')
 
 
 
@@ -231,8 +231,10 @@ def login():
                 return redirect('/edit/0')
             else:
                 return render_template('login.html', params=params, error="Invalid credentials")
-            
-    return render_template('login.html', params=params)
+    
+    response = make_response(render_template('login.html', params=params))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    return response
 
 # Sign-Up Page
 @app.route('/signup', methods=['GET','POST'])
