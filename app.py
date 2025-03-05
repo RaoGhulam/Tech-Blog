@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, render_template_string
+from flask import Flask, render_template, request, session, redirect, render_template_string, make_response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 import json
@@ -132,7 +132,12 @@ def dashboard():
                 return redirect('/dashboard')
             
         _posts = Post.query.all()
-        return render_template('dashboard.html', params=params, posts=_posts)
+        response = make_response(render_template('dashboard.html', params=params, posts=_posts))
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        return response
+    
+    else:
+        return render_template('login.html', params=params)
 
 
 
@@ -251,8 +256,3 @@ def signup():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
-
