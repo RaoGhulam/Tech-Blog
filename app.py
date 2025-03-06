@@ -137,7 +137,7 @@ def dashboard():
         return response
     
     else:
-        return redirect('/login')
+        return redirect('/')
 
 
 
@@ -208,9 +208,8 @@ def delete():
 # Logout
 @app.route("/logout")
 def logout():
-    session.pop('user')    
-    return redirect('/')
-
+    session.clear()
+    return redirect("/")
 
 # Login Page
 @app.route('/login', methods=['GET','POST'])
