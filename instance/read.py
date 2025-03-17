@@ -16,6 +16,14 @@ cursor = conn.cursor()
 # for row in rows:
 #     print(row)
 
+# Read Post Table -------------------------------------------------------------------------
+cursor.execute("SELECT * FROM User")
+rows = cursor.fetchall()
+
+for row in rows:
+    print(row)
+
+
 # # Check ALl tables in the database-----------------------------------------------------------
 # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
 # tables = cursor.fetchall()
