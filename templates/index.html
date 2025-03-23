@@ -15,7 +15,27 @@
             </div>
         </div>
     </div>
-</header>
+
+</header><!-- Category Filter (Optional) -->
+<div class="container px-4 px-lg-5">
+    <form method="GET" action="/" class="mb-4">
+        <label for="category">Filter by Category:</label>
+        <select name="category" id="category" onchange="this.form.submit()">
+            <option value="">Select Categories</option>
+            <option value="all">all</option>
+            <option value="Technology">Technology</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Data Science">Data Science</option>
+            <option value="Artificial Intelligence">Artificial Intelligence</option>
+            <option value="Cyber Security">Cyber Security</option>
+            <option value="Fin-Tech">Fin-Tech</option>
+            <option value="others">others</option>
+        </select>
+    </form>
+</div>
+
+
+
 <!-- Main Content-->
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -39,6 +59,7 @@
                     <p class="post-meta">
                         Posted by {{ post.author}} on {{ post.date.strftime('%Y-%m-%d %H:%M:%S') }}
                     </p>
+                    <p><strong>Category:</strong> {{ post.category }}</p>
                     {{ post.content[0:30] }}
                 </div>
                 <!-- Divider-->

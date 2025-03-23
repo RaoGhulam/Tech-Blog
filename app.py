@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, render_template_string, make_response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
+from flask_migrate import Migrate
 import json
 
 app = Flask(__name__)
@@ -12,6 +13,8 @@ with app.open_instance_resource('config.json') as config_file:
 
 local_server = params['local_server']
 
+
+
 # Connetcing with Database
 if(local_server):
     app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
@@ -19,6 +22,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = params['production_uri']
     
 db = SQLAlchemy(app)
+migrate=Migrate(app, db)
 
 # Model representing the published posts table
 class Post(db.Model):
@@ -28,6 +32,7 @@ class Post(db.Model):
     author = db.Column(db.Text, nullable=False)
     slug = db.Column(db.Text, nullable=False)
     content = db.Column(db.Text, nullable=False)
+    category = db.Column(db.Text, nullable=False, default="General")  # New category field
     date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 # Model representing the pending posts table
@@ -38,6 +43,7 @@ class Pending_Post(db.Model):
     author = db.Column(db.Text, nullable=False)
     slug = db.Column(db.Text, nullable=False)
     content = db.Column(db.Text, nullable=False)
+    category = db.Column(db.Text, nullable=False, default="General")  # New category field
     date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 # Model representing the contacts table
@@ -63,8 +69,12 @@ with app.app_context():
 # Index Page Route
 @app.route('/')
 def home():
-    _posts = Post.query.limit(params['no_of_posts']).all()  # Fetch a limited number of posts as defined in params
-    return render_template('index.html', posts=_posts, params=params)
+    category_filter= request.args.get('category','all')
+    if category_filter=='all':
+        _posts = Post.query.limit(params['no_of_posts']).all()  # Fetch a limited number of posts as defined in params
+    else: 
+        _posts=Post.query.filter_by(category=category_filter).limit(params['no_of_posts']).all()
+    return render_template('index.html', posts=_posts, params=params,selected_category=category_filter)
 
 # About Page Route
 @app.route('/about')
@@ -118,7 +128,7 @@ def dashboard():
             if post:
                 approved_post = Post(
                     title=post.title, subtitle=post.subtitle, author=post.author,
-                    slug=post.slug, content=post.content, date=post.date
+                    slug=post.slug, content=post.content, category=post.category, date=post.date
                 )
                 db.session.add(approved_post)
                 db.session.delete(post)  # Remove post from the Pending_Post table
@@ -161,13 +171,14 @@ def edit(sno):
             _slug = request.form.get('slug')
             _content = request.form.get('content')
             _date = datetime.now(timezone.utc)
+            _category = request.form.get('category')  # Retrieve selected category
 
             # Admin or user adding a new post (Triggered from edit.html with sno='0')
             if sno == '0':
                 if session['user'] == params['admin_username']:  # Admin adding a new post
                     post = Post(
                         title=_title, subtitle=_subtitle, author=_author,
-                        slug=_slug, content=_content, date=_date
+                        slug=_slug, content=_content,category=_category, date=_date
                     )
                     db.session.add(post)
                     db.session.commit()
@@ -176,7 +187,7 @@ def edit(sno):
                 else:  # Regular user submitting a new post (Goes to pending review)
                     post = Pending_Post(
                         title=_title, subtitle=_subtitle, author=_author,
-                        slug=_slug, content=_content, date=_date
+                        slug=_slug, content=_content,category=_category, date=_date
                     )
                     db.session.add(post)
                     db.session.commit()
@@ -191,6 +202,7 @@ def edit(sno):
                     post.subtitle = _subtitle
                     post.slug = _slug
                     post.content = _content
+                    post.category=_category
                     post.date = _date
                     db.session.add(post)
                     db.session.commit()
@@ -285,4 +297,3 @@ def signup():
 if __name__ == "__main__":
     app.run(debug=True)
 
-print("Line Added ")
