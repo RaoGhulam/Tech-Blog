@@ -19,12 +19,12 @@ cursor = conn.cursor()
 #     print(row)
 
 
-# Read Post Table -------------------------------------------------------------------------
-cursor.execute("SELECT * FROM User")
-rows = cursor.fetchall()
+# # Read Post Table -------------------------------------------------------------------------
+# cursor.execute("SELECT * FROM User")
+# rows = cursor.fetchall()
 
-for row in rows:
-    print(row)
+# for row in rows:
+#     print(row)
 
 # # Check ALl tables in the database-----------------------------------------------------------
 # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -123,7 +123,7 @@ for row in rows:
 # conn.commit()
 
 # # Delete a Table --------------------------------------------------------------------------
-# cursor.execute("DROP TABLE IF EXISTS Pending_Post")
+# cursor.execute("DROP TABLE IF EXISTS Pending__Post")
 # conn.commit()
 
 # # Delete a Table --------------------------------------------------------------------------
