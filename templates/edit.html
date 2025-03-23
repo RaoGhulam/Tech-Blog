@@ -51,6 +51,22 @@
                     <label for="content">Content</label>
                     <div class="invalid-feedback">Content is required.</div>
                 </div>
+
+                <div class="form-floating">
+                    
+                    <select class="form-control" id="category" name="category" required>
+                        <option value="Technology" {% if post and post.category == "Technology" %}selected{% endif %}>Technology</option>
+                        <option value="Computer Science" {% if post and post.category == "Computer Science" %}selected{% endif %}>Computer Science</option>
+                        <option value="Data Science" {% if post and post.category == "Data Science" %}selected{% endif %}>Data Science</option>
+                        <option value="Artificial Intelligence" {% if post and post.category == "Artificial Intelligence" %}selected{% endif %}>Artificial Intelligence</option>
+                        <option value="Cyber Security" {% if post and post.category == "Cyber Security" %}selected{% endif %}>Cyber Security</option>
+                        <option value="Fin-Tech" {% if post and post.category == "Fin-Tech" %}selected{% endif %}>Fin-Tech</option>
+                        <option value="others" {% if post and post.category == "others" %}selected{% endif %}>others</option>
+                    </select>
+                    <label for="category">Category</label>
+                    <div class="invalid-feedback">Please select a category.</div>
+                    
+                </div>
             
                 <br />
             
