@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, render_template_string, make_response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
-from flask_migrate import Migrate
 import json
 
 app = Flask(__name__)
@@ -22,7 +21,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = params['production_uri']
     
 db = SQLAlchemy(app)
-migrate=Migrate(app, db)
+
 
 # Model representing the published posts table
 class Post(db.Model):
